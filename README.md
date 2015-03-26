@@ -1,11 +1,16 @@
 # FluidText
 Small Parsing plugin to create JSON-Based chat helpfiles for Bukkit/Spigot 1.8
+
 ## Helpfile Syntax
+
 All helpfiles are simple TextFiles using the legacy ampersand notation (&1...&f) with the addition of 2 more items that will allow to customize the helpfiles
+
 * **{PLAYER}** Will be replaced with the player name that executes the command
 * **´Text|Click_Action|Hover_Action|Click_Value|Hover_Value´** To create a button
+
 ##Creating a button
 Creating a button is simple, here are some examples:
+
 ###Simple button
 **´[Click Me]|run_command||/say Hello|´**
 
