@@ -1,0 +1,56 @@
+name: FluidText
+main: FluidText.fluidtext.fluidtext
+version: 0.0.1_SNAPSHOT
+author: Penaz
+database: false
+
+
+commands:
+    colors:
+        description: Sends a player the list of colors and styles in chat
+        aliases: [col,colortest]
+        usage: /colors
+        permission: FluidText.colors
+        permission-message: You need the FluidText.colors permission to execute this command
+    fluidtest:
+        description: Sends a test message to the player executing the command
+        usage: /fluidtest
+        aliases: ft
+        permission: FluidText.fluidtest
+        permission-message: You need the FluidText.fluidtest permission to execute this command
+    fluidhelp:
+        description: Sends a help screen in chat
+        usage: /fluidhelp <name>
+        aliases: fh
+        permission: FluidText.fluidhelp
+        permission-message: You need the FluidText.fluidhelp permission to execute this command
+    fluidyaml:
+        description: Sends a help screen in chat parsed from a YML file
+        usage: /fluidyaml <filename> <section>
+        aliases: fy
+        permission: FluidText.fluidyaml
+        permission-message: You need the FluidText.fluidyaml permission to execute this command
+    fluidedit:
+        description: Edit FluidText Settings
+        usage: /fluidedit <section> <new setting>
+        aliases: fe
+        permission: FluidText.fluidedit
+        permission-message: You need the FluidText.fluidedit permission to execute this command
+    setitem:
+        description: Tries to get info about the item you're holding
+        usage: /setitem id
+        aliases: si
+        permission: FluidText.setItem
+        permission-message: You need the FluidText.setItem permission to execute this command
+    delitem:
+        description: Deletes an item from the items.yml list
+        usage: /delitem id
+        aliases: di
+        permission: FluidText.delItem
+        permission-message: You need the FluidText.delItem permission to execute this command
+    getitem:
+        description: Gives the Command Sender the item with the specified ID from the items.yml list
+        usage: /getitem id
+        aliases: gi
+        permission: FluidText.getItem
+        permission-message: You need the FluidText.getItem permission to execute this command
