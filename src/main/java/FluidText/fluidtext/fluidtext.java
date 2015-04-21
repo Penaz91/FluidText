@@ -5,12 +5,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import mkremins.fanciful.FancyMessage;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -143,6 +145,26 @@ public final class fluidtext extends JavaPlugin {
 				pi.addItem(i);
 			}
 			return true;
+		}
+		else if (cmd.getName().equalsIgnoreCase("link")){
+			if (sender instanceof Player){
+				ItemStack is=((Player) sender).getItemInHand();
+				FancyMessage msg=new FancyMessage();
+				if (is.getItemMeta().hasDisplayName()){
+					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
+				}else{
+					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
+				}
+				msg.itemTooltip(is);
+				Iterable<? extends Player> pl=Bukkit.getOnlinePlayers();
+				msg.send(pl);
+			}else{
+				sender.sendMessage("This command must be executed by a player");
+			}
+			return true;
+		}
+		else if (cmd.getName().equalsIgnoreCase("version")){
+			sender.sendMessage("FluidText version "+Bukkit.getServer().getPluginManager().getPlugin("FluidText").getDescription().getVersion()+"\n Developed by Penaz");
 		}
 		return false;
 	}

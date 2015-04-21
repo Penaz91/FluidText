@@ -31,3 +31,5 @@ This will create a button which will have [Click Me] as test, will suggest the c
 * **/setitem id** Replaces the item with Identifier "id" with the item you're currently holding
 * **/delitem id** Deletes the item with Identifier "id"
 * **/getitem id** Spawns the item with Identifier "id", so it can be modified.
+* **/link** Posts in chat full info of the item you're holding
+* **/fluidtext:version Shows the plugin version

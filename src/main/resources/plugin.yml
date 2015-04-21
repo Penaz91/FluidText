@@ -54,3 +54,13 @@ commands:
         aliases: gi
         permission: FluidText.getItem
         permission-message: You need the FluidText.getItem permission to execute this command
+    link:
+        description: Links the current item in chat
+        usage: /link
+        aliases: l
+        permission: FluidText.link
+        permission-message: You need the FluidText.link permission to execute this command
+    version:
+        description: Shows the FluidText Version and information
+        permission: FluidText.version
+        permission-message: You need the FluidText.version permission to execute this command
