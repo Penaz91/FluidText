@@ -1,5 +1,6 @@
+// Package declaration
 package FluidText.fluidtext;
-
+// Imports
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,12 +23,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
-
+//Class
 public final class fluidtext extends JavaPlugin {
+	/*-------------------------------
+	 * Vars
+	 * ------------------------------
+	 */
 	private String divider = "";
 	private ChatColor yamlcolor=null;
 	private float rowsperpage=0;
 	@Override
+	/**
+	 * Actions to perform on plugin loading
+	 */
 	public void onEnable(){
 		getLogger().info("FluidText has been Enabled");
 		File f = getDataFolder();
@@ -37,15 +45,33 @@ public final class fluidtext extends JavaPlugin {
 		ReloadCustomConfig();
 		}
 	@Override
+	/**
+	 * Actions to perform on plugin unloading
+	 */
 	public void onDisable(){
 		getLogger().info("FluidText has been disabled");
 	}
 	@Override
+	/**
+	 * Handles the commands sent from players or console
+	 * @param sender The command Sender
+	 * @param cmd The command sent
+	 * @param label -unused-
+	 * @param args Additional command parameters
+	 */
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+		/* The /colors command
+		 * Shows in chat a full list of the color and formatting codes
+		 */
 		if (cmd.getName().equalsIgnoreCase("colors")){
 			sender.sendMessage(FormatParse("&00&11&22&33&44&55&66&77&88&99&aa&bb&cc&dd&ee&ff  &ll&r&mm&r&nn&r&oo&rr",sender, true));
 			return true;
 		}
+		/*
+		 * The /fluidtest command
+		 * Shows some test lines to test the plugin functionalities
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("FluidTest")){
 			if (sender instanceof Player){
 				FancyMessage msg=new FancyMessage();
@@ -60,6 +86,13 @@ public final class fluidtext extends JavaPlugin {
 			}
 			return true;
 		}
+		/*
+		 * The /fluidhelp [textfile] <page> command
+		 * Parses a text file into a help window in chat
+		 * Requires: textfile - The textfile name (without extension)
+		 * Optional: page - the page to show
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("FluidHelp")){
 			if (sender instanceof Player){
 				if (args.length<2){
@@ -77,6 +110,14 @@ public final class fluidtext extends JavaPlugin {
 			}
 			return true;
 		}
+		/*
+		 * The /fluidyaml [file] [section] command
+		 * Parses a YAML file and shows the section defined in the command
+		 * Requires:
+		 * - file - The YAML file to parse (Without Extension)
+		 * - section - the YAML section to show
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("FluidYAML")){
 			if (sender instanceof Player){
 				if (args.length==2){
@@ -87,6 +128,14 @@ public final class fluidtext extends JavaPlugin {
 				return true;
 			}
 		}
+		/*
+		 * The /fluidedit [setting] [value] command
+		 * Edits one of the fluidtext settings
+		 * Requires:
+		 * - setting - the name of the section in the config.yml file to edit
+		 * - value - the new value
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("FluidEdit")){
 			if (sender instanceof Player){
 				if (args.length==2){
@@ -96,11 +145,17 @@ public final class fluidtext extends JavaPlugin {
 					ReloadCustomConfig();
 					sender.sendMessage(args[0]+" setting successfully edited to "+args[1]);
 				}else{
-					sender.sendMessage("Usage: /FluidEdit section option");
+					sender.sendMessage("Usage: /FluidEdit setting value");
 				}
 				return true;
 			}
 		}
+		/*
+		 * The /setitem [id] command
+		 * Memorizes/Replaces the item in Items.yml that has the defined id with the item in hand
+		 * Requires: id - the item identifier
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("setItem")){
 			if (sender instanceof Player){
 				ItemStack i=((Player) sender).getItemInHand();
@@ -123,6 +178,12 @@ public final class fluidtext extends JavaPlugin {
 			}
 			return true;
 		}
+		/*
+		 * The /delitem [id] command
+		 * Erases the item with the defined id in the items.yml file
+		 * Requires: id - the item identifier
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("delItem")){
 			File customfile = new File(getDataFolder(),"items.yml");
 			FileConfiguration customyml=YamlConfiguration.loadConfiguration(customfile);
@@ -134,6 +195,12 @@ public final class fluidtext extends JavaPlugin {
 			}
 			return true;
 		}
+		/*
+		 * The /getitem [id] command
+		 * Places the item with the defined ID in your inventory
+		 * Requires: id - the item identifier
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("getItem")){
 			PlayerInventory pi = ((Player) sender).getInventory();
 			if (pi.firstEmpty()==-1) {
@@ -146,6 +213,11 @@ public final class fluidtext extends JavaPlugin {
 			}
 			return true;
 		}
+		/*
+		 * The /link command
+		 * Posts in chat a line that shows all the data of the item held in hand
+		 * Can only be executed by a player
+		 */
 		else if (cmd.getName().equalsIgnoreCase("link")){
 			if (sender instanceof Player){
 				ItemStack is=((Player) sender).getItemInHand();
@@ -163,11 +235,21 @@ public final class fluidtext extends JavaPlugin {
 			}
 			return true;
 		}
+		/*
+		 * The /version command
+		 * Shows version and information about the plugin.
+		 */
 		else if (cmd.getName().equalsIgnoreCase("version")){
 			sender.sendMessage("FluidText version "+Bukkit.getServer().getPluginManager().getPlugin("FluidText").getDescription().getVersion()+"\n Developed by Penaz");
 		}
 		return false;
 	}
+	/**
+	 * Parses a YAML file and shows the defined section in chat
+	 * @param sender The command sender
+	 * @param file The Yaml file to parse
+	 * @param section The section to show 
+	 */
 	public void YAMLParser(CommandSender sender, String file, String section){
 		try{
 			File customFile= new File(getDataFolder()+"/YamlHelpFiles",file+".yml");
@@ -189,6 +271,9 @@ public final class fluidtext extends JavaPlugin {
 			sender.sendMessage("File or Section not found");
 		}
 	}
+	/**
+	 * Reloads the Custom configuration files.
+	 */
 	public void ReloadCustomConfig(){
 		divider=getConfig().getString("divider");
 		String col=getConfig().getString("YamlDefaultColor");
@@ -210,6 +295,13 @@ public final class fluidtext extends JavaPlugin {
 		else if (col.equals("f")){yamlcolor=ChatColor.WHITE;}
 		rowsperpage=Integer.parseInt(getConfig().getString("RowsPerPage"));
 	}
+	/**
+	 * Parses the legacy ampersand (&) notation to show colors and format in the messages and buttons
+	 * @param line The line to parse
+	 * @param sender The Command Sender
+	 * @param simple Simplified parsing (for buttons)
+	 * @return The colored/formatted line
+	 */
 	public String FormatParse(String line, CommandSender sender, boolean simple){
 		//TODO: Find a less hacky way to convert from the Legacy &xx format to the new JSON format
 		//Also buttons still stop coloring in case of a new line
@@ -256,6 +348,12 @@ public final class fluidtext extends JavaPlugin {
         }
         return newline;
 	}
+	/**
+	 * Parses the defined file and shows it in chat
+	 * @param file The TextFile to parse
+	 * @param sender The command sender
+	 * @param page The page number to show (Defaults to 1)
+	 */
 	public void FileParser(String file,CommandSender sender, int page){
 		try{
 			FileReader f = new FileReader(getDataFolder()+"/HelpFiles/"+file+".txt");
@@ -304,6 +402,12 @@ public final class fluidtext extends JavaPlugin {
 			sender.sendMessage("Chapter not found");
 		}
 	}
+	/**
+	 * Parses the buttons in the Helpfiles
+	 * @param text The Text to parse
+	 * @param sender The Command Sender
+	 * @return The message complete with buttons
+	 */
 	public FancyMessage Parse(String text,CommandSender sender){
 		FancyMessage msg = new FancyMessage();
 		Pattern pt=Pattern.compile("\\`[^\\`]+\\`");
