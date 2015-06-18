@@ -60,6 +60,12 @@ commands:
         aliases: l
         permission: FluidText.link
         permission-message: You need the FluidText.link permission to execute this command
+    pmlink:
+        description: Sends the current item description via PM
+        usage: /pmlink playername
+        aliases: pml
+        permission: FluidText.link
+        permission-message: You need the FluidText.link permission to execute this command
     version:
         description: Shows the FluidText Version and information
         permission: FluidText.version

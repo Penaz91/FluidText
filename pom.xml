@@ -52,14 +52,18 @@
     <dependency>
         <groupId>mkremins</groupId>
         <artifactId>fanciful</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.3-SNAPSHOT</version>
     </dependency>
   	<dependency>
   	    <groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>LATEST</version>
+  		<version>1.8.3-R0.1-SNAPSHOT</version>
   		<type>jar</type>
   		<scope>provided</scope>
   	</dependency>
   </dependencies>
+  <properties>
+  	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
 </project>

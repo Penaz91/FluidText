@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -229,6 +228,40 @@ public final class fluidtext extends JavaPlugin {
 				}
 				msg.itemTooltip(is);
 				Iterable<? extends Player> pl=Bukkit.getOnlinePlayers();
+				msg.send(pl);
+			}else{
+				sender.sendMessage("This command must be executed by a player");
+			}
+			return true;
+		}
+		/*
+		 * The /pmlink command
+		 * Posts in chat a line that shows all the data of the item held in hand, sent to a specific player
+		 * Can only be executed by a player
+		 */
+		else if (cmd.getName().equalsIgnoreCase("link")){
+			if (sender instanceof Player){
+				ItemStack is=((Player) sender).getItemInHand();
+				FancyMessage msg=new FancyMessage();
+				Player pl=null;
+				try{
+					Iterable<? extends Player> players=Bukkit.getOnlinePlayers();
+					for (Player player:players){
+						if (player.getName()==args[1]){
+							pl=player;
+							break;
+						}
+					}
+					throw new Exception("Player not found");
+				}catch (Exception e){
+					sender.sendMessage("Player not found or the argument is not a player");
+				}
+				if (is.getItemMeta().hasDisplayName()){
+					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
+				}else{
+					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
+				}
+				msg.itemTooltip(is);
 				msg.send(pl);
 			}else{
 				sender.sendMessage("This command must be executed by a player");
