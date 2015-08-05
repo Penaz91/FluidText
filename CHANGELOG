@@ -1,3 +1,7 @@
+#####August 5th, 2015
+Added support for PMLink
+Emergency quickfix for package auto-deploy on first run
+Added support for Bukkit 1.8.3
 #####April 22nd, 2015
 Added some javadocs and comments to the source
 #####April 21st, 2015
