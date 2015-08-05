@@ -40,6 +40,13 @@ public final class fluidtext extends JavaPlugin {
 		File f = getDataFolder();
 		if (!f.exists()){
 			f.mkdir();
+			File h=new File(f.toString()+File.separator+"Helpfiles");
+			File y=new File(f.toString()+File.separator+"YamlHelpFiles");
+			h.mkdir();
+			y.mkdir();
+			saveResource("config.yml", false);
+			saveResource("items.yml",false);
+			saveResource("plugin.yml",false);
 		}
 		ReloadCustomConfig();
 		}
@@ -239,30 +246,34 @@ public final class fluidtext extends JavaPlugin {
 		 * Posts in chat a line that shows all the data of the item held in hand, sent to a specific player
 		 * Can only be executed by a player
 		 */
-		else if (cmd.getName().equalsIgnoreCase("link")){
+		else if (cmd.getName().equalsIgnoreCase("pmlink")){
 			if (sender instanceof Player){
 				ItemStack is=((Player) sender).getItemInHand();
 				FancyMessage msg=new FancyMessage();
 				Player pl=null;
+				getLogger().info("Argument: "+args[0].toString());
 				try{
 					Iterable<? extends Player> players=Bukkit.getOnlinePlayers();
 					for (Player player:players){
-						if (player.getName()==args[1]){
+						if (player.getName().equalsIgnoreCase(args[0])){
+							getLogger().info("Entrato nel ramo true if");
 							pl=player;
+							getLogger().info(pl.getDisplayName());
 							break;
 						}
+						getLogger().info("Entrato nel ramo false if");
 					}
-					throw new Exception("Player not found");
-				}catch (Exception e){
+				}catch (NullPointerException e){
 					sender.sendMessage("Player not found or the argument is not a player");
 				}
 				if (is.getItemMeta().hasDisplayName()){
-					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
+					msg.text("<").color(ChatColor.YELLOW).then("PMLink").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
 				}else{
-					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
+					msg.text("<").color(ChatColor.YELLOW).then("PMLink").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
 				}
 				msg.itemTooltip(is);
 				msg.send(pl);
+				msg.send(sender);
 			}else{
 				sender.sendMessage("This command must be executed by a player");
 			}
