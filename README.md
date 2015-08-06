@@ -1,6 +1,9 @@
 # FluidText
 Small Parsing plugin to create JSON-Based chat helpfiles for Bukkit/Spigot 1.8
 
+# Important
+This plugin requires your server to run on Java8, if you're using a Java7 server you'll receive an unsupported major/minor version error
+
 ## Helpfile Syntax
 
 All helpfiles are simple TextFiles using the legacy ampersand notation (&1...&f) with the addition of 2 more items that will allow to customize the helpfiles
