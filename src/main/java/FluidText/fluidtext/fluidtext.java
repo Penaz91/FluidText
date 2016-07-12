@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +32,7 @@ public final class fluidtext extends JavaPlugin {
 	private String divider = "";
 	private ChatColor yamlcolor=null;
 	private float rowsperpage=0;
+	private HashMap<Player, Long> cooldowns=new HashMap<Player,Long>();
 	@Override
 	/**
 	 * Actions to perform on plugin loading
@@ -220,22 +222,37 @@ public final class fluidtext extends JavaPlugin {
 			return true;
 		}
 		/*
+		 * The /itemlist command
+		 * Gives out the items list
+		 * Can only be executed by a player
+		 */
+		else if (cmd.getName().equalsIgnoreCase("itemList")){
+			File customfile = new File(getDataFolder(),"items.yml");
+			FileConfiguration customyml=YamlConfiguration.loadConfiguration(customfile);
+			sender.sendMessage(customyml.getKeys(false).toString());
+			return true;
+		}
+		/*
 		 * The /link command
 		 * Posts in chat a line that shows all the data of the item held in hand
 		 * Can only be executed by a player
 		 */
 		else if (cmd.getName().equalsIgnoreCase("link")){
 			if (sender instanceof Player){
-				ItemStack is=((Player) sender).getItemInHand();
-				FancyMessage msg=new FancyMessage();
-				if (is.getItemMeta().hasDisplayName()){
-					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
+				if (sender.hasPermission("fluidText.bypasscooldowns") || getCooldown( (Player) sender) == 0){
+					ItemStack is=((Player) sender).getItemInHand();
+					FancyMessage msg=new FancyMessage();
+					if (is.getItemMeta().hasDisplayName()){
+						msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
+					}else{
+						msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
+					}
+					msg.itemTooltip(is);
+					Iterable<? extends Player> pl=Bukkit.getOnlinePlayers();
+					msg.send(pl);
 				}else{
-					msg.text("<").color(ChatColor.YELLOW).then("Link").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
+					sender.sendMessage("Link is in cooldown, please wait "+getCooldown((Player) sender)+ " more seconds.");
 				}
-				msg.itemTooltip(is);
-				Iterable<? extends Player> pl=Bukkit.getOnlinePlayers();
-				msg.send(pl);
 			}else{
 				sender.sendMessage("This command must be executed by a player");
 			}
@@ -248,32 +265,36 @@ public final class fluidtext extends JavaPlugin {
 		 */
 		else if (cmd.getName().equalsIgnoreCase("pmlink")){
 			if (sender instanceof Player){
-				ItemStack is=((Player) sender).getItemInHand();
-				FancyMessage msg=new FancyMessage();
-				Player pl=null;
-				getLogger().info("Argument: "+args[0].toString());
-				try{
-					Iterable<? extends Player> players=Bukkit.getOnlinePlayers();
-					for (Player player:players){
-						if (player.getName().equalsIgnoreCase(args[0])){
-							getLogger().info("Entrato nel ramo true if");
-							pl=player;
-							getLogger().info(pl.getDisplayName());
-							break;
+				if (sender.hasPermission("fluidText.bypasscooldowns") || getCooldown( (Player) sender) == 0){
+					ItemStack is=((Player) sender).getItemInHand();
+					FancyMessage msg=new FancyMessage();
+					Player pl=null;
+					getLogger().info("Argument: "+args[0].toString());
+					try{
+						Iterable<? extends Player> players=Bukkit.getOnlinePlayers();
+						for (Player player:players){
+							if (player.getName().equalsIgnoreCase(args[0])){
+								getLogger().info("Entrato nel ramo true if");
+								pl=player;
+								getLogger().info(pl.getDisplayName());
+								break;
+							}
+							getLogger().info("Entrato nel ramo false if");
 						}
-						getLogger().info("Entrato nel ramo false if");
+					}catch (NullPointerException e){
+						sender.sendMessage("Player not found or the argument is not a player");
 					}
-				}catch (NullPointerException e){
-					sender.sendMessage("Player not found or the argument is not a player");
-				}
-				if (is.getItemMeta().hasDisplayName()){
-					msg.text("<").color(ChatColor.YELLOW).then("PMLink").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
+					if (is.getItemMeta().hasDisplayName()){
+						msg.text("<").color(ChatColor.YELLOW).then("PMLink").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getItemMeta().getDisplayName()+"]");
+					}else{
+						msg.text("<").color(ChatColor.YELLOW).then("PMLink").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
+					}
+					msg.itemTooltip(is);
+					msg.send(pl);
+					msg.send(sender);
 				}else{
-					msg.text("<").color(ChatColor.YELLOW).then("PMLink").color(ChatColor.BLUE).then(">").color(ChatColor.YELLOW).then("<"+sender.getName()+">: ["+is.getType()+"]");
+					sender.sendMessage("Link is in cooldown, please wait "+getCooldown((Player) sender)+ " more seconds.");
 				}
-				msg.itemTooltip(is);
-				msg.send(pl);
-				msg.send(sender);
 			}else{
 				sender.sendMessage("This command must be executed by a player");
 			}
@@ -500,5 +521,18 @@ public final class fluidtext extends JavaPlugin {
 			}
 		}
 		return msg;
+	}
+	public long getCooldown(Player p){
+		if (cooldowns.containsKey(p)){
+			if (System.currentTimeMillis()-cooldowns.get(p)>5000){
+				cooldowns.put(p, System.currentTimeMillis());
+				return 0;
+			}else{
+				return ((5000-(System.currentTimeMillis()-cooldowns.get(p)))/1000);
+			}
+		}else{
+			cooldowns.put(p, System.currentTimeMillis());
+			return 0;
+		}
 	}
 }

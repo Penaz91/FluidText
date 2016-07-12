@@ -54,6 +54,12 @@ commands:
         aliases: gi
         permission: FluidText.getItem
         permission-message: You need the FluidText.getItem permission to execute this command
+    itemlist:
+        description: Gives out a list of the items in Archive
+        usage: /itemlist
+        aliases: il
+        permission: FluidText.ItemList
+        permission-message: You need the FluidText.ItemList permission to execute this command
     link:
         description: Links the current item in chat
         usage: /link
