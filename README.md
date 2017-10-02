@@ -1,4 +1,7 @@
 # FluidText
+
+![Status:Halted](https://img.shields.io/badge/Project_Status-Halted-yellow.svg)
+
 Small Parsing plugin to create JSON-Based chat helpfiles for Bukkit/Spigot 1.8
 
 # Important
